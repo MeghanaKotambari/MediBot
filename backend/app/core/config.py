@@ -6,7 +6,7 @@ class Settings(BaseSettings):
     GEMINI_API_KEY: str
     GEMINI_EMBEDDING_MODEL: str ="gemini-embedding-001"
     GEMINI_EMBEDDING_DIMENSION: int =768
-    GEMINI_LLM_MODEL: str = "gemini-3.8-flash"
+    GEMINI_LLM_MODEL: str = "gemini-3.6-flash"
 
     #Pinecone
     PINECONE_API_KEY : str
