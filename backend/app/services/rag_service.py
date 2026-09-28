@@ -1,5 +1,10 @@
-from app.services.retrieval_service import search_documents
-from app.services.llm_service import generate_answer
+from app.services.retrieval_service import (
+    search_documents,
+)
+
+from app.services.llm_service import (
+    generate_answer,
+)
 
 
 def generate_rag_response(
@@ -8,7 +13,7 @@ def generate_rag_response(
 ):
 
     # --------------------------------
-    # 1. Retrieve relevant chunks
+    # 1. Retrieve
     # --------------------------------
 
     results = search_documents(
@@ -16,56 +21,79 @@ def generate_rag_response(
         top_k=top_k,
     )
 
-    # --------------------------------
-    # 2. Prepare context + sources
-    # --------------------------------
-
     context_parts = []
+
     sources = []
 
-    for index, match in enumerate(results.matches, start=1):
+    for index, match in enumerate(
+        results.matches,
+        start=1,
+    ):
 
-        text = match.metadata.get("text", "")
-        page_number = match.metadata.get("page_number")
-        document_name = match.metadata.get("document_name")
+        text = match.metadata.get(
+            "text",
+            "",
+        )
 
-        # Create a source ID
-        source_id = index
+        page_number = match.metadata.get(
+            "page_number"
+        )
+
+        document_name = match.metadata.get(
+            "document_name"
+        )
+
+        section = match.metadata.get(
+            "section",
+            "General",
+        )
+
+        # -----------------------------
+        # Context
+        # -----------------------------
 
         context_parts.append(
             f"""
-[Source {source_id}]
+[Source {index}]
+
 Document: {document_name}
 Page: {page_number}
+Section: {section}
 
 Content:
 {text}
 """
         )
 
+        # -----------------------------
+        # Source metadata
+        # -----------------------------
+
         sources.append(
             {
-                "id": source_id,
+                "id": index,
                 "document": document_name,
                 "page": page_number,
-                "score": round(match.score, 4),
+                "section": section,
+                "score": round(
+                    match.score,
+                    4,
+                ),
             }
         )
 
-    context = "\n\n".join(context_parts)
+    context = "\n\n".join(
+        context_parts
+    )
 
     # --------------------------------
-    # 3. Generate grounded answer
+    # 2. Generate answer
     # --------------------------------
 
     answer = generate_answer(
         question=question,
         context=context,
     )
-
-    # --------------------------------
-    # 4. Return answer + sources
-    # --------------------------------
 
     return {
         "answer": answer,

@@ -6,7 +6,18 @@ from app.core.config import settings
 pc = Pinecone(
     api_key=settings.PINECONE_API_KEY
 )
+def clear_documents():
 
+    index = get_index()
+
+    index.delete(
+        namespace="medical-documents",
+        delete_all=True,
+    )
+
+    return {
+        "message": "Medical document namespace cleared."
+    }
 
 def get_index():
 
@@ -21,22 +32,25 @@ def store_chunks(chunks: list[dict], batch_size: int = 100):
 
     index = get_index()
 
-    vectors = [
-        {
-            "id": f"{chunk['document_name']}_{chunk['chunk_id']}",
-            "values": chunk["embedding"],
-            "metadata": {
-                "text": chunk["text"],
-                "page_number": chunk["page_number"],
-                "document_name": chunk["document_name"],
-            },
-        }
-        for chunk in chunks
-    ]
+    vectors = []
+
+    for chunk in chunks:
+        vectors.append(
+            {
+                "id": f"{chunk['document_name']}_{chunk['chunk_id']}",
+                "values": chunk["embedding"],
+                "metadata": {
+                    "text": chunk["text"],
+                    "page_number": chunk["page_number"],
+                    "section": chunk.get("section", "General"),
+                    "document_name": chunk["document_name"],
+                },
+            }
+        )
 
     for i in range(0, len(vectors), batch_size):
         batch = vectors[i : i + batch_size]
         index.upsert(
             vectors=batch,
             namespace="medical-documents",
-        )
+        )

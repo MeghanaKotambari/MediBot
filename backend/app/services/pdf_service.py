@@ -1,4 +1,4 @@
-import fitz
+import pymupdf as fitz
 
 
 def extract_pages(pdf_path: str) -> list[dict]:
