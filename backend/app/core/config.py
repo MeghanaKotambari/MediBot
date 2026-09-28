@@ -17,8 +17,8 @@ class Settings(BaseSettings):
     CHUNK_OVERLAP: int =120
 
     #MongoDB - later
-    MONGODB_URI: str | None = None
-    MONGODB_DATABASE: str = "medical-rag"
+    MONGO_URI: str | None = None
+    MONGO_DB_NAME: str = "medical_rag"
 
     model_config = SettingsConfigDict(
         env_file= ".env",

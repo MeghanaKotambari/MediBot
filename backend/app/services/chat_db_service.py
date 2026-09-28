@@ -1,0 +1,53 @@
+from datetime import datetime, timezone
+
+from bson import ObjectId
+
+from app.db.mongodb import (
+    conversations_collection,
+    messages_collection,
+)
+
+
+def create_conversation(
+    user_id: str = "anonymous",
+):
+
+    conversation = {
+        "user_id": user_id,
+        "title": "New conversation",
+        "created_at": datetime.now(timezone.utc),
+        "updated_at": datetime.now(timezone.utc),
+    }
+
+    result = conversations_collection.insert_one(
+        conversation
+    )
+
+    return str(result.inserted_id)
+
+
+def save_message(
+    conversation_id: str,
+    role: str,
+    content: str,
+    sources: list | None = None,
+):
+
+    try:
+        conv_id = ObjectId(conversation_id)
+    except Exception:
+        conv_id = conversation_id
+
+    message = {
+        "conversation_id": conv_id,
+        "role": role,
+        "content": content,
+        "sources": sources or [],
+        "created_at": datetime.now(timezone.utc),
+    }
+
+    result = messages_collection.insert_one(
+        message
+    )
+
+    return str(result.inserted_id)

@@ -1,3 +1,4 @@
+import logging
 from pathlib import Path
 
 from app.services.pdf_service import extract_pages
@@ -6,6 +7,9 @@ from app.services.embedding_service import (
     generate_document_embedding,
 )
 from app.services.vector_service import store_chunks
+from app.services.document_db_service import save_document
+
+logger = logging.getLogger(__name__)
 
 
 def process_document(pdf_path: str):
@@ -45,8 +49,24 @@ def process_document(pdf_path: str):
 
     store_chunks(chunks)
 
+    # --------------------------------
+    # 5. Save in MongoDB
+    # --------------------------------
+
+    try:
+        document_record = save_document(
+            document_name=document_name,
+            pages=len(pages),
+            chunks=len(chunks),
+        )
+        database_id = document_record["id"]
+    except Exception as e:
+        logger.warning("Could not save document metadata to MongoDB: %s", e)
+        database_id = None
+
     return {
         "document_name": document_name,
         "pages": len(pages),
         "chunks": len(chunks),
-    }
+        "database_id": database_id,
+    }
