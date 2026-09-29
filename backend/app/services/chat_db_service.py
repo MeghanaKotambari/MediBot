@@ -51,3 +51,37 @@ def save_message(
     )
 
     return str(result.inserted_id)
+
+def get_conversation_messages(
+    conversation_id: str,
+    limit: int = 10,
+):
+    messages = messages_collection.find(
+        {
+            "conversation_id": ObjectId(
+                conversation_id
+            )
+        }
+    ).sort(
+        "created_at",
+        1
+    ).limit(limit)
+
+    return list(messages)
+
+def format_conversation_history(
+    messages: list,
+) -> str:
+
+    history = []
+
+    for message in messages:
+
+        role = message["role"]
+        content = message["content"]
+
+        history.append(
+            f"{role.upper()}: {content}"
+        )
+
+    return "\n".join(history)
