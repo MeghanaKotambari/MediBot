@@ -1,5 +1,6 @@
 import logging
 from pathlib import Path
+from uuid import uuid4
 
 from app.services.pdf_service import extract_pages
 from app.services.chunk_service import create_chunks
@@ -30,6 +31,7 @@ def process_document(
     chunks = create_chunks(pages)
 
     document_name = Path(pdf_path).name
+    document_id = str(uuid4())
 
     # --------------------------------
     # 3. Generate embeddings
@@ -43,6 +45,7 @@ def process_document(
 
         chunk["document_name"] = document_name
         chunk["user_id"] = user_id
+        chunk["document_id"] = document_id
 
     # --------------------------------
     # 4. Store in Pinecone
@@ -67,6 +70,7 @@ def process_document(
         database_id = None
 
     return {
+        "document_id": document_id,
         "document_name": document_name,
         "pages": len(pages),
         "chunks": len(chunks),

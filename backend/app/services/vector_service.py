@@ -35,9 +35,14 @@ def store_chunks(chunks: list[dict], batch_size: int = 100):
     vectors = []
 
     for chunk in chunks:
+        vector_id = (
+            f"{chunk['document_id']}_"
+            f"{chunk['chunk_id']}"
+        )
+
         vectors.append(
             {
-                "id": f"{chunk['document_name']}_{chunk['chunk_id']}",
+                "id": vector_id,
                 "values": chunk["embedding"],
                 "metadata": {
                     "text": chunk["text"],
@@ -45,6 +50,7 @@ def store_chunks(chunks: list[dict], batch_size: int = 100):
                     "section": chunk.get("section", "General"),
                     "document_name": chunk["document_name"],
                     "user_id": chunk.get("user_id"),
+                    "document_id": chunk.get("document_id"),
                 },
             }
         )
