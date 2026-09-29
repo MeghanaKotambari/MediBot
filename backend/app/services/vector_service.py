@@ -44,6 +44,7 @@ def store_chunks(chunks: list[dict], batch_size: int = 100):
                     "page_number": chunk["page_number"],
                     "section": chunk.get("section", "General"),
                     "document_name": chunk["document_name"],
+                    "user_id": chunk.get("user_id"),
                 },
             }
         )
@@ -53,4 +54,4 @@ def store_chunks(chunks: list[dict], batch_size: int = 100):
         index.upsert(
             vectors=batch,
             namespace="medical-documents",
-        )
+        )

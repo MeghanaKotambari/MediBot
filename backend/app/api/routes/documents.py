@@ -6,10 +6,15 @@ from fastapi import (
     UploadFile,
     File,
     HTTPException,
+    Depends,
 )
 
+from app.core.security import get_current_user
 from app.services.document_service import (
     process_document,
+)
+from app.services.document_db_service import (
+    get_user_documents,
 )
 
 
@@ -28,8 +33,9 @@ UPLOAD_DIR.mkdir(
 
 
 @router.post("/upload")
-async def upload_document(
+def upload_document(
     file: UploadFile = File(...),
+    current_user=Depends(get_current_user),
 ):
 
     if not file.filename:
@@ -53,11 +59,42 @@ async def upload_document(
             buffer,
         )
 
+    user_id = str(current_user["_id"])
+
     result = process_document(
-        str(file_path)
+        pdf_path=str(file_path),
+        user_id=user_id,
     )
 
     return {
         "message": "Document processed successfully.",
         "data": result,
     }
+
+
+@router.get("")
+@router.get("/")
+def get_documents(
+    current_user=Depends(get_current_user),
+):
+
+    user_id = str(current_user["_id"])
+
+    documents = get_user_documents(
+        user_id
+    )
+
+    return [
+        {
+            "id": str(document["_id"]),
+            "document_name": document[
+                "document_name"
+            ],
+            "pages": document["pages"],
+            "chunks": document["chunks"],
+            "created_at": document[
+                "created_at"
+            ],
+        }
+        for document in documents
+    ]

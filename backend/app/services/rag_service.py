@@ -9,6 +9,7 @@ from app.services.llm_service import (
 
 def generate_rag_response(
     question: str,
+    user_id: str,
     top_k: int = 3,
 ):
 
@@ -18,6 +19,7 @@ def generate_rag_response(
 
     results = search_documents(
         query=question,
+        user_id=user_id,
         top_k=top_k,
     )
 

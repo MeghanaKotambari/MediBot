@@ -93,6 +93,7 @@ def chat(
 
     result = generate_rag_response(
         question=search_query,
+        user_id=user_id,
         top_k=request.top_k,
     )
 

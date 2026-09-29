@@ -12,7 +12,10 @@ from app.services.document_db_service import save_document
 logger = logging.getLogger(__name__)
 
 
-def process_document(pdf_path: str):
+def process_document(
+    pdf_path: str,
+    user_id: str,
+):
 
     # --------------------------------
     # 1. Extract PDF
@@ -33,15 +36,13 @@ def process_document(pdf_path: str):
     # --------------------------------
 
     for chunk in chunks:
-
-        chunk["embedding"] = (
-            generate_document_embedding(
-                text=chunk["text"],
-                title=document_name,
-            )
+        chunk["embedding"] = generate_document_embedding(
+            text=chunk["text"],
+            title=document_name,
         )
 
         chunk["document_name"] = document_name
+        chunk["user_id"] = user_id
 
     # --------------------------------
     # 4. Store in Pinecone
@@ -55,6 +56,7 @@ def process_document(pdf_path: str):
 
     try:
         document_record = save_document(
+            user_id=user_id,
             document_name=document_name,
             pages=len(pages),
             chunks=len(chunks),
@@ -69,4 +71,4 @@ def process_document(pdf_path: str):
         "pages": len(pages),
         "chunks": len(chunks),
         "database_id": database_id,
-    }
+    }

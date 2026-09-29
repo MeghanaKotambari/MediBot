@@ -9,23 +9,26 @@ from app.services.vector_service import (
 
 def search_documents(
     query: str,
+    user_id: str,
     top_k: int = 5,
 ):
 
-    # Convert question to embedding
-    query_embedding = (
-        generate_query_embedding(query)
+    query_embedding = generate_query_embedding(
+        query
     )
 
-    # Get Pinecone index
     index = get_index()
 
-    # Search
     results = index.query(
         namespace="medical-documents",
         vector=query_embedding,
         top_k=top_k,
         include_metadata=True,
+        filter={
+            "user_id": {
+                "$eq": user_id
+            }
+        },
     )
 
     return results
