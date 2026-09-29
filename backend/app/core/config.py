@@ -20,6 +20,10 @@ class Settings(BaseSettings):
     MONGO_URI: str | None = None
     MONGO_DB_NAME: str = "medical_rag"
 
+    JWT_SECRET_KEY: str
+    JWT_ALGORITHM: str = "HS256"
+    JWT_EXPIRE_MINUTES: int = 60
+
     model_config = SettingsConfigDict(
         env_file= ".env",
         env_file_encoding="utf-8",

@@ -8,12 +8,10 @@ from app.db.mongodb import (
 )
 
 
-def create_conversation(
-    user_id: str = "anonymous",
-):
+def create_conversation(user_id: str):
 
     conversation = {
-        "user_id": user_id,
+        "user_id": ObjectId(user_id),
         "title": "New conversation",
         "created_at": datetime.now(timezone.utc),
         "updated_at": datetime.now(timezone.utc),
@@ -24,6 +22,24 @@ def create_conversation(
     )
 
     return str(result.inserted_id)
+
+
+def get_user_conversation(
+    conversation_id: str,
+    user_id: str,
+):
+    try:
+        conv_id = ObjectId(conversation_id)
+        u_id = ObjectId(user_id)
+    except Exception:
+        return None
+
+    return conversations_collection.find_one(
+        {
+            "_id": conv_id,
+            "user_id": u_id,
+        }
+    )
 
 
 def save_message(
@@ -52,10 +68,12 @@ def save_message(
 
     return str(result.inserted_id)
 
+
 def get_conversation_messages(
     conversation_id: str,
     limit: int = 10,
 ):
+
     messages = messages_collection.find(
         {
             "conversation_id": ObjectId(
@@ -69,6 +87,7 @@ def get_conversation_messages(
 
     return list(messages)
 
+
 def format_conversation_history(
     messages: list,
 ) -> str:
@@ -77,11 +96,23 @@ def format_conversation_history(
 
     for message in messages:
 
-        role = message["role"]
-        content = message["content"]
-
         history.append(
-            f"{role.upper()}: {content}"
+            f"{message['role'].upper()}: "
+            f"{message['content']}"
         )
 
     return "\n".join(history)
+def get_user_conversations(
+    user_id: str,
+):
+
+    conversations = conversations_collection.find(
+        {
+            "user_id": ObjectId(user_id)
+        }
+    ).sort(
+        "updated_at",
+        -1
+    )
+
+    return list(conversations)

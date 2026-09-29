@@ -46,4 +46,6 @@ class _LazyCollection:
 
 documents_collection = _LazyCollection("documents")
 conversations_collection = _LazyCollection("conversations")
-messages_collection = _LazyCollection("messages")
+messages_collection = _LazyCollection("messages")
+users_collection = _LazyCollection("users")
+
