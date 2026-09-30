@@ -1,0 +1,133 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-[#F8FAFC] text-[#0F172A] antialiased;
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif;
+  }
+
+  code, pre {
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  ::selection {
+    background-color: #BAE6FD;
+    color: #0369A1;
+  }
+}
+
+/* Custom delicate scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94A3B8;
+}
+
+/* Medical Clinical Ambient Grid Background */
+.medical-grid-bg {
+  background-color: #F8FAFC;
+  background-image: 
+    radial-gradient(rgba(2, 132, 199, 0.12) 1.2px, transparent 1.2px),
+    linear-gradient(to right, rgba(226, 232, 240, 0.4) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(226, 232, 240, 0.4) 1px, transparent 1px);
+  background-size: 32px 32px, 64px 64px, 64px 64px;
+}
+
+/* Medical Crosshair telemetry pattern */
+.medical-cross-pattern {
+  background-image: radial-gradient(circle at center, rgba(14, 165, 233, 0.08) 2px, transparent 2px);
+  background-size: 24px 24px;
+}
+
+/* Modern Frosted Glass Card */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.04);
+}
+
+.glass-panel-elevated {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(186, 230, 253, 0.5);
+  box-shadow: 0 10px 30px -4px rgba(2, 132, 199, 0.08), 0 4px 12px -2px rgba(15, 23, 42, 0.04);
+}
+
+/* Glowing Medical Elements */
+.glow-border-cyan {
+  border-color: rgba(6, 182, 212, 0.4);
+  box-shadow: 0 0 15px -3px rgba(6, 182, 212, 0.25);
+}
+
+.glow-border-blue {
+  border-color: rgba(2, 132, 199, 0.4);
+  box-shadow: 0 0 15px -3px rgba(2, 132, 199, 0.25);
+}
+
+/* High-tech Gradient Text */
+.gradient-text-clinical {
+  background: linear-gradient(135deg, #0284C7 0%, #0369A1 50%, #4F46E5 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.gradient-text-cyan {
+  background: linear-gradient(135deg, #06B6D4 0%, #0284C7 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Animated EKG pulse stroke */
+@keyframes ekgTrace {
+  0% {
+    stroke-dashoffset: 1200;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+.animate-ekg-trace {
+  stroke-dasharray: 1200;
+  animation: ekgTrace 4s linear infinite;
+}
+
+/* Subtle breathing glow effect */
+@keyframes ambientBreathe {
+  0%, 100% {
+    opacity: 0.45;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.05);
+  }
+}
+
+.animate-ambient-breathe {
+  animation: ambientBreathe 7s ease-in-out infinite;
+}
+

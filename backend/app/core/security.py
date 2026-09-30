@@ -61,3 +61,27 @@ def get_current_user(
         )
 
     return user
+
+
+optional_security = HTTPBearer(auto_error=False)
+
+
+def get_optional_current_user(
+    credentials: HTTPAuthorizationCredentials | None = Depends(optional_security),
+):
+    if not credentials:
+        return None
+
+    token = credentials.credentials
+    try:
+        payload = jwt.decode(
+            token,
+            settings.JWT_SECRET_KEY,
+            algorithms=[settings.JWT_ALGORITHM],
+        )
+        user_id = payload.get("sub")
+        if not user_id:
+            return None
+        return get_user_by_id(user_id)
+    except Exception:
+        return None

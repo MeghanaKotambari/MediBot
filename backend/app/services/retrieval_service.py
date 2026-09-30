@@ -9,7 +9,7 @@ from app.services.vector_service import (
 
 def search_documents(
     query: str,
-    user_id: str,
+    user_id: str | None = None,
     top_k: int = 5,
 ):
 
@@ -19,16 +19,20 @@ def search_documents(
 
     index = get_index()
 
-    results = index.query(
-        namespace="medical-documents",
-        vector=query_embedding,
-        top_k=top_k,
-        include_metadata=True,
-        filter={
+    query_kwargs = {
+        "namespace": "medical-documents",
+        "vector": query_embedding,
+        "top_k": top_k,
+        "include_metadata": True,
+    }
+
+    if user_id:
+        query_kwargs["filter"] = {
             "user_id": {
-                "$eq": user_id
+                "$eq": str(user_id)
             }
-        },
-    )
+        }
+
+    results = index.query(**query_kwargs)
 
     return results

@@ -8,11 +8,11 @@ from app.db.mongodb import (
 )
 
 
-def create_conversation(user_id: str):
+def create_conversation(user_id: str, title: str = "New conversation"):
 
     conversation = {
         "user_id": ObjectId(user_id),
-        "title": "New conversation",
+        "title": title,
         "created_at": datetime.now(timezone.utc),
         "updated_at": datetime.now(timezone.utc),
     }
@@ -22,6 +22,17 @@ def create_conversation(user_id: str):
     )
 
     return str(result.inserted_id)
+
+
+def update_conversation_timestamp(conversation_id: str):
+    try:
+        conv_id = ObjectId(conversation_id)
+        conversations_collection.update_one(
+            {"_id": conv_id},
+            {"$set": {"updated_at": datetime.now(timezone.utc)}},
+        )
+    except Exception:
+        pass
 
 
 def get_user_conversation(
